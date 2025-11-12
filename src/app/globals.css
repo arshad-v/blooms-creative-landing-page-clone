@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;900&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-background: #3A3A3A;
+  --color-foreground: #E8E4DC;
+
+  --color-card: #3A3A3A;
+  --color-card-foreground: #E8E4DC;
+
+  --color-popover: #3A3A3A;
+  --color-popover-foreground: #E8E4DC;
+
+  --color-primary: #D77A6A;
+  --color-primary-foreground: #3A3A3A;
+
+  --color-secondary: #E8E4DC;
+  --color-secondary-foreground: #3A3A3A;
+
+  --color-muted: #2C2C2C;
+  --color-muted-foreground: #E8E4DC;
+
+  --color-accent: #9BCFC4;
+  --color-accent-foreground: #3A3A3A;
+
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fafafa;
+
+  --color-border: #555555;
+  --color-input: #2C2C2C;
+  --color-ring: #9BCFC4;
+
+  --color-chart-1: #e67e22;
+  --color-chart-2: #2d8659;
+  --color-chart-3: #1e3a5f;
+  --color-chart-4: #f1c40f;
+  --color-chart-5: #e74c3c;
+
+  --color-sidebar: #2C2C2C;
+  --color-sidebar-foreground: #E8E4DC;
+  --color-sidebar-primary: #9BCFC4;
+  --color-sidebar-primary-foreground: #3A3A3A;
+  --color-sidebar-accent: #555555;
+  --color-sidebar-accent-foreground: #E8E4DC;
+  --color-sidebar-border: #555555;
+  --color-sidebar-ring: #9BCFC4;
+
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  --color-bg-primary-dark: #3A3A3A;
+  --color-text-primary-light: #E8E4DC;
+  --color-accent-coral: #D77A6A;
+  --color-accent-teal: #9BCFC4;
+  --color-text-dark: #3A3A3A;
+  --color-bg-light-beige: #E8E4DC;
+  --color-bg-mint: #A8D5CA;
+
+  --font-display: "Bebas Neue", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+/*
+  The default border color has changed to currentColor in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #555555;
+  }
+}
+
+@layer utilities {
+  body {
+    font-family: var(--font-body);
+  }
+}
+
+@layer base {
+  :root {
+    --background: var(--color-bg-primary-dark);
+    --foreground: var(--color-text-primary-light);
+    --card: var(--color-card);
+    --card-foreground: var(--color-card-foreground);
+    --popover: var(--color-popover);
+    --popover-foreground: var(--color-popover-foreground);
+    --primary: var(--color-primary);
+    --primary-foreground: var(--color-primary-foreground);
+    --secondary: var(--color-secondary);
+    --secondary-foreground: var(--color-secondary-foreground);
+    --muted: var(--color-muted);
+    --muted-foreground: var(--color-muted-foreground);
+    --accent: var(--color-accent);
+    --accent-foreground: var(--color-accent-foreground);
+    --destructive: var(--color-destructive);
+    --destructive-foreground: var(--color-destructive-foreground);
+    --border: var(--color-border);
+    --input: var(--color-input);
+    --ring: var(--color-ring);
+    --chart-1: var(--color-chart-1);
+    --chart-2: var(--color-chart-2);
+    --chart-3: var(--color-chart-3);
+    --chart-4: var(--color-chart-4);
+    --chart-5: var(--color-chart-5);
+    --radius: var(--radius-lg);
+    --sidebar-background: var(--color-sidebar);
+    --sidebar-foreground: var(--color-sidebar-foreground);
+    --sidebar-primary: var(--color-sidebar-primary);
+    --sidebar-primary-foreground: var(--color-sidebar-primary-foreground);
+    --sidebar-accent: var(--color-sidebar-accent);
+    --sidebar-accent-foreground: var(--color-sidebar-accent-foreground);
+    --sidebar-border: var(--color-sidebar-border);
+    --sidebar-ring: var(--color-sidebar-ring);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  h1 {
+    font-size: 7.5rem; /* 120px */
+    font-weight: 900;
+  }
+
+  h2 {
+    font-size: 3.75rem; /* 60px */
+    font-weight: 900;
+  }
+
+  p {
+    line-height: 1.7;
+  }
+
+  .text-feature {
+    font-family: var(--font-display);
+    font-size: 2.25rem; /* 36px */
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .text-body-large {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  .text-body-regular {
+    font-size: 1rem; /* 16px */
+    font-weight: 400;
+    line-height: 1.7;
+  }
+
+  .text-button {
+    font-size: 0.875rem; /* 14px */
+    font-weight: 600;
+  }
+
+  .text-small {
+    font-size: 0.875rem; /* 14px */
+    font-weight: 400;
+  }
+
+  .text-accent-italic {
+    font-family: var(--font-body); /* Using body font for italic, as Bebas Neue doesn't have italic */
+    font-size: 1.125rem; /* 18px */
+    font-style: italic;
+    text-transform: uppercase;
+  }
+
+  .container {
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    h1 {
+      font-size: 5.625rem; /* 90px */
+    }
+    h2 {
+      font-size: 2.5rem; /* 40px */
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Hide Next.js error overlay portal */
+nextjs-portal {
+  display: none !important;
+}
