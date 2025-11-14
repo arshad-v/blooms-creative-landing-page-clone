@@ -40,6 +40,8 @@ const ServicesSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [lineEndY, setLineEndY] = useState(200);
+  const [showFlag, setShowFlag] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,29 +54,30 @@ const ServicesSection = () => {
       const sectionTop = rect.top;
       const sectionHeight = rect.height;
       
-      // Start animation when section enters viewport
+      // Progress from 0 to 1 as section scrolls through viewport
       const startPoint = windowHeight - sectionTop;
-      const progress = Math.max(0, Math.min(1, startPoint / (sectionHeight * 0.8)));
+      const progress = Math.max(0, Math.min(1, startPoint / sectionHeight));
 
       setScrollProgress(progress);
 
-      // Animate path drawing smoothly
-      const pathLength = pathRef.current.getTotalLength();
-      const drawLength = pathLength * progress;
-      pathRef.current.style.strokeDashoffset = `${pathLength - drawLength}`;
-    };
+      // Calculate line end position that moves with scroll
+      // Line starts at Y=200 and moves to Y=1020 (mountain peak)
+      const startY = 200;
+      const endY = 1020;
+      const currentEndY = startY + (endY - startY) * progress;
+      setLineEndY(currentEndY);
 
-    // Initialize path animation
-    if (pathRef.current) {
-      const pathLength = pathRef.current.getTotalLength();
-      pathRef.current.style.strokeDasharray = `${pathLength}`;
-      pathRef.current.style.strokeDashoffset = `${pathLength}`;
-    }
+      // Show flag only when line reaches near the mountain peak (95% of the way)
+      setShowFlag(progress >= 0.95);
+    };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Create dynamic path based on current line position
+  const dynamicPath = `M 500,200 C 450,${200 + (lineEndY - 200) * 0.3} 420,${200 + (lineEndY - 200) * 0.5} 440,${200 + (lineEndY - 200) * 0.6} C 455,${200 + (lineEndY - 200) * 0.75} 480,${200 + (lineEndY - 200) * 0.85} 495,${200 + (lineEndY - 200) * 0.93} C 498,${200 + (lineEndY - 200) * 0.97} 500,${lineEndY - 10} 500,${lineEndY}`;
 
   return (
     <section ref={sectionRef} className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
@@ -98,17 +101,17 @@ const ServicesSection = () => {
         }}
       ></div>
 
-      {/* Animated Smooth Curved Path Line */}
+      {/* Animated Smooth Curved Path Line - moves with scroll */}
       <svg
         className="absolute left-0 top-0 w-full h-full z-[3] pointer-events-none"
         viewBox="0 0 1000 1200"
         preserveAspectRatio="xMidYMid slice"
         style={{ overflow: 'visible' }}
       >
-        {/* Smooth flowing path from heading area down to mountain peak */}
+        {/* Dynamic path that extends as you scroll */}
         <path
           ref={pathRef}
-          d="M 500,200 C 450,300 420,420 440,540 C 455,640 480,740 495,840 C 498,900 500,960 500,1020"
+          d={dynamicPath}
           fill="none"
           stroke="#9BCFC4"
           strokeWidth="4"
@@ -116,7 +119,7 @@ const ServicesSection = () => {
           strokeLinejoin="round"
           style={{
             filter: 'drop-shadow(0 0 10px rgba(155, 207, 196, 0.8))',
-            transition: 'stroke-dashoffset 0.3s ease-out',
+            transition: 'all 0.1s linear',
           }}
         />
       </svg>
@@ -142,14 +145,14 @@ const ServicesSection = () => {
           />
         </svg>
         
-        {/* Red Flag at Mountain Peak */}
+        {/* Red Flag at Mountain Peak - appears only when line reaches peak */}
         <div
-          className="absolute transition-all duration-700 ease-out"
+          className="absolute transition-all duration-500 ease-out"
           style={{
             left: '50%',
             bottom: '180px',
-            transform: `translateX(-50%) scale(${scrollProgress > 0.75 ? 1 : 0})`,
-            opacity: scrollProgress > 0.75 ? 1 : 0,
+            transform: `translateX(-50%) scale(${showFlag ? 1 : 0})`,
+            opacity: showFlag ? 1 : 0,
             zIndex: 10,
           }}
         >
