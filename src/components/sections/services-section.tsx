@@ -40,8 +40,6 @@ const ServicesSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [lineEndY, setLineEndY] = useState(200);
-  const [showFlag, setShowFlag] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,34 +48,30 @@ const ServicesSection = () => {
       const rect = sectionRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Calculate scroll progress through the section
-      const sectionTop = rect.top;
+      // Calculate smooth progress as user scrolls through section
+      const scrollPosition = windowHeight - rect.top;
       const sectionHeight = rect.height;
-      
-      // Progress from 0 to 1 as section scrolls through viewport
-      const startPoint = windowHeight - sectionTop;
-      const progress = Math.max(0, Math.min(1, startPoint / sectionHeight));
+      const progress = Math.max(0, Math.min(1, scrollPosition / (sectionHeight * 0.7)));
 
       setScrollProgress(progress);
 
-      // Calculate line end position that moves with scroll
-      // Line starts at Y=200 and moves to Y=1020 (mountain peak)
-      const startY = 200;
-      const endY = 1020;
-      const currentEndY = startY + (endY - startY) * progress;
-      setLineEndY(currentEndY);
-
-      // Show flag only when line reaches near the mountain peak (95% of the way)
-      setShowFlag(progress >= 0.95);
+      // Animate the path drawing
+      const pathLength = pathRef.current.getTotalLength();
+      const drawLength = pathLength * progress;
+      pathRef.current.style.strokeDashoffset = `${pathLength - drawLength}`;
     };
+
+    // Initialize path with full dasharray
+    if (pathRef.current) {
+      const pathLength = pathRef.current.getTotalLength();
+      pathRef.current.style.strokeDasharray = `${pathLength}`;
+      pathRef.current.style.strokeDashoffset = `${pathLength}`;
+    }
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Create dynamic path based on current line position
-  const dynamicPath = `M 500,200 C 450,${200 + (lineEndY - 200) * 0.3} 420,${200 + (lineEndY - 200) * 0.5} 440,${200 + (lineEndY - 200) * 0.6} C 455,${200 + (lineEndY - 200) * 0.75} 480,${200 + (lineEndY - 200) * 0.85} 495,${200 + (lineEndY - 200) * 0.93} C 498,${200 + (lineEndY - 200) * 0.97} 500,${lineEndY - 10} 500,${lineEndY}`;
 
   return (
     <section ref={sectionRef} className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
@@ -101,86 +95,61 @@ const ServicesSection = () => {
         }}
       ></div>
 
-      {/* Animated Smooth Curved Path Line - moves with scroll */}
+      {/* Animated Smooth Curved Path Line */}
       <svg
         className="absolute left-0 top-0 w-full h-full z-[3] pointer-events-none"
-        viewBox="0 0 1000 1200"
+        viewBox="0 0 1000 1000"
         preserveAspectRatio="xMidYMid slice"
-        style={{ overflow: 'visible' }}
       >
-        {/* Dynamic path that extends as you scroll */}
+        {/* Smooth curved path from heading to mountain peak */}
         <path
           ref={pathRef}
-          d={dynamicPath}
+          d="M 500,180 C 420,280 380,380 400,480 C 420,580 460,680 490,780 C 495,820 498,860 500,900"
           fill="none"
           stroke="#9BCFC4"
-          strokeWidth="4"
+          strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
           style={{
-            filter: 'drop-shadow(0 0 10px rgba(155, 207, 196, 0.8))',
-            transition: 'all 0.1s linear',
+            filter: 'drop-shadow(0 0 8px rgba(155, 207, 196, 0.7))',
           }}
         />
       </svg>
 
-      {/* Mountain Divider with Peak */}
-      <div className="absolute bottom-0 left-0 right-0 z-[4] pointer-events-none h-[200px] md:h-[280px]">
+      {/* Mountain Divider at Bottom */}
+      <div className="absolute bottom-0 left-0 right-0 z-[4] pointer-events-none">
         <svg
-          viewBox="0 0 1440 280"
-          className="w-full h-full"
+          viewBox="0 0 1440 300"
+          className="w-full h-auto"
           preserveAspectRatio="none"
         >
-          {/* Mountain range with prominent peak at center where path ends */}
+          {/* Mountain range with peak at center */}
           <path
-            d="M 0,280 L 0,220 L 200,200 L 400,180 L 600,160 L 700,100 L 740,80 L 780,100 L 840,140 L 1040,180 L 1240,200 L 1440,220 L 1440,280 Z"
+            d="M 0,300 L 0,250 L 300,230 L 600,200 L 720,150 L 840,200 L 1140,230 L 1440,250 L 1440,300 Z"
             fill="#9BCFC4"
-            opacity="0.35"
-          />
-          {/* Secondary mountain layer */}
-          <path
-            d="M 0,280 L 0,240 L 300,230 L 500,210 L 680,190 L 720,150 L 760,190 L 940,210 L 1140,230 L 1440,240 L 1440,280 Z"
-            fill="#9BCFC4"
-            opacity="0.2"
+            opacity="0.3"
           />
         </svg>
         
-        {/* Red Flag at Mountain Peak - appears only when line reaches peak */}
+        {/* Red Flag at Mountain Peak - positioned to align with path endpoint */}
         <div
           className="absolute transition-all duration-500 ease-out"
           style={{
             left: '50%',
-            bottom: '180px',
-            transform: `translateX(-50%) scale(${showFlag ? 1 : 0})`,
-            opacity: showFlag ? 1 : 0,
-            zIndex: 10,
+            bottom: '150px',
+            transform: `translateX(-50%) scale(${scrollProgress > 0.85 ? 1 : 0}) translateY(${scrollProgress > 0.85 ? 0 : 20}px)`,
+            opacity: scrollProgress > 0.85 ? 1 : 0,
           }}
         >
-          <svg width="32" height="48" viewBox="0 0 32 48">
+          <svg width="28" height="40" viewBox="0 0 28 40">
             {/* Flag pole */}
-            <line 
-              x1="3" 
-              y1="0" 
-              x2="3" 
-              y2="48" 
-              stroke="#888" 
-              strokeWidth="2.5" 
-              strokeLinecap="round"
-            />
-            {/* Red/coral flag with wave effect */}
+            <line x1="2" y1="0" x2="2" y2="40" stroke="#777" strokeWidth="2" />
+            {/* Red/coral flag */}
             <path
-              d="M 3,4 L 28,4 C 28,4 28,10 26,12 C 24,14 22,14 20,12 C 18,10 16,10 14,12 C 12,14 10,14 8,12 C 6,10 4,10 3,12 Z"
+              d="M 2,3 L 24,3 L 24,16 L 14,13 L 2,16 Z"
               fill="#D77A6A"
-              stroke="#B85E4E"
-              strokeWidth="1"
-            />
-            {/* Flag shadow for depth */}
-            <path
-              d="M 3,12 L 28,12 C 28,12 28,18 26,20 C 24,22 22,22 20,20 C 18,18 16,18 14,20 C 12,22 10,22 8,20 C 6,18 4,18 3,20 Z"
-              fill="#D77A6A"
-              opacity="0.7"
-              stroke="#B85E4E"
-              strokeWidth="1"
+              stroke="#C66958"
+              strokeWidth="0.5"
             />
           </svg>
         </div>
