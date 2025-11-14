@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 const services = [
   {
@@ -34,8 +37,44 @@ const services = [
 ];
 
 const ServicesSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current || !pathRef.current) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Calculate smooth progress as user scrolls through section
+      const scrollPosition = windowHeight - rect.top;
+      const sectionHeight = rect.height;
+      const progress = Math.max(0, Math.min(1, scrollPosition / (sectionHeight * 0.7)));
+
+      setScrollProgress(progress);
+
+      // Animate the path drawing
+      const pathLength = pathRef.current.getTotalLength();
+      const drawLength = pathLength * progress;
+      pathRef.current.style.strokeDashoffset = `${pathLength - drawLength}`;
+    };
+
+    // Initialize path with full dasharray
+    if (pathRef.current) {
+      const pathLength = pathRef.current.getTotalLength();
+      pathRef.current.style.strokeDasharray = `${pathLength}`;
+      pathRef.current.style.strokeDashoffset = `${pathLength}`;
+    }
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <section className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
+    <section ref={sectionRef} className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
       {/* Map Overlay */}
       <div
         className="absolute inset-0 z-[1] opacity-10"
@@ -56,7 +95,67 @@ const ServicesSection = () => {
         }}
       ></div>
 
-      <div className="container relative z-[3]">
+      {/* Animated Smooth Curved Path Line */}
+      <svg
+        className="absolute left-0 top-0 w-full h-full z-[3] pointer-events-none"
+        viewBox="0 0 1000 1000"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        {/* Smooth curved path from heading to mountain peak */}
+        <path
+          ref={pathRef}
+          d="M 500,180 C 420,280 380,380 400,480 C 420,580 460,680 490,780 C 495,820 498,860 500,900"
+          fill="none"
+          stroke="#9BCFC4"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            filter: 'drop-shadow(0 0 8px rgba(155, 207, 196, 0.7))',
+          }}
+        />
+      </svg>
+
+      {/* Mountain Divider at Bottom */}
+      <div className="absolute bottom-0 left-0 right-0 z-[4] pointer-events-none">
+        <svg
+          viewBox="0 0 1440 300"
+          className="w-full h-auto"
+          preserveAspectRatio="none"
+        >
+          {/* Mountain range with peak at center */}
+          <path
+            d="M 0,300 L 0,250 L 300,230 L 600,200 L 720,150 L 840,200 L 1140,230 L 1440,250 L 1440,300 Z"
+            fill="#9BCFC4"
+            opacity="0.3"
+          />
+        </svg>
+        
+        {/* Red Flag at Mountain Peak - positioned to align with path endpoint */}
+        <div
+          className="absolute transition-all duration-500 ease-out"
+          style={{
+            left: '50%',
+            bottom: '150px',
+            transform: `translateX(-50%) scale(${scrollProgress > 0.85 ? 1 : 0}) translateY(${scrollProgress > 0.85 ? 0 : 20}px)`,
+            opacity: scrollProgress > 0.85 ? 1 : 0,
+          }}
+        >
+          <svg width="28" height="40" viewBox="0 0 28 40">
+            {/* Flag pole */}
+            <line x1="2" y1="0" x2="2" y2="40" stroke="#777" strokeWidth="2" />
+            {/* Red/coral flag */}
+            <path
+              d="M 2,3 L 24,3 L 24,16 L 14,13 L 2,16 Z"
+              fill="#D77A6A"
+              stroke="#C66958"
+              strokeWidth="0.5"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div className="container relative z-[5]">
         <div className="text-center max-w-4xl mx-auto mb-20 md:mb-32">
           <h2 className="text-4xl md:text-[60px] font-black uppercase font-display leading-none text-foreground/90">
             The route to strong concepts that conquer markets
