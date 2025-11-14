@@ -40,8 +40,8 @@ const WorkSection = () => {
         { id: 6, type: 'image', src: 'https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/00dc00fc-ebbf-4980-a987-9ac623d74852-basecamp-agency/assets/images/67c082ddfee8cc452c991277_IMG_1135_20normaal-3.jpeg' },
     ];
 
-    // Duplicate array for seamless loop
-    const duplicatedCards = [...imageCards, ...imageCards, ...imageCards];
+    // Duplicate array 4 times for seamless infinite loop
+    const duplicatedCards = [...imageCards, ...imageCards, ...imageCards, ...imageCards];
 
     return (
         <section ref={sectionRef} id="work" className="relative bg-[#3a3a3a] text-foreground pt-40 pb-60 overflow-hidden">
@@ -60,23 +60,24 @@ const WorkSection = () => {
                 WORK WORK WORK WORK
             </div>
 
-            {/* Sloped image cards container with automatic animation */}
-            <div className="container relative mx-auto h-[110vh] min-h-[900px] z-[1] flex items-center justify-center">
+            {/* Full-width sloped image cards container with fast smooth animation */}
+            <div className="relative mx-auto h-[110vh] min-h-[900px] z-[1] flex items-center justify-center w-full">
                 <div className="relative w-full overflow-visible">
                     {/* Sloped structure container - rotated for diagonal effect */}
                     <div 
-                        className="relative"
+                        className="relative w-full"
                         style={{
                             transform: 'rotate(-8deg)',
                             transformOrigin: 'center center'
                         }}
                     >
-                        {/* Auto-scrolling image strip */}
+                        {/* Auto-scrolling image strip - FULL WIDTH */}
                         <div className="relative w-full overflow-hidden py-8">
                             <div 
-                                className="flex gap-6 animate-marquee-slow"
+                                className="flex gap-6"
                                 style={{
-                                    animation: 'marquee 40s linear infinite',
+                                    animation: 'workMarquee 20s linear infinite',
+                                    willChange: 'transform',
                                 }}
                             >
                                 {duplicatedCards.map((card, index) => (
@@ -133,18 +134,6 @@ const WorkSection = () => {
                   transform: 'translateY(2px)'
                 }}
             ></div>
-
-            {/* Inline keyframes for marquee animation */}
-            <style jsx>{`
-                @keyframes marquee {
-                    0% {
-                        transform: translateX(0);
-                    }
-                    100% {
-                        transform: translateX(-33.333%);
-                    }
-                }
-            `}</style>
         </section>
     );
 };

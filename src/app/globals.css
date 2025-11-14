@@ -72,6 +72,15 @@
     }
   }
 
+  @keyframes workMarquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-25%);
+    }
+  }
+
   --color-bg-primary-dark: #3A3A3A;
   --color-text-primary-light: #E8E4DC;
   --color-accent-coral: #D77A6A;
