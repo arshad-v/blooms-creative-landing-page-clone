@@ -2,6 +2,7 @@ import HeroSection from "@/components/sections/hero-section";
 import WorkSection from "@/components/sections/work-section";
 import ClientLogosSection from "@/components/sections/client-logos-section";
 import PhilosophySection from "@/components/sections/philosophy-section";
+import ServicesOverviewSection from "@/components/sections/services-overview-section";
 import ServicesSection from "@/components/sections/services-section";
 import ContactSection from "@/components/sections/contact-section";
 import FooterSection from "@/components/sections/footer-section";
@@ -15,6 +16,7 @@ export default function HomePage() {
       <WorkSection />
       <ClientLogosSection />
       <PhilosophySection />
+      <ServicesOverviewSection />
       <ServicesSection />
       <ContactSection />
       <FooterSection />
