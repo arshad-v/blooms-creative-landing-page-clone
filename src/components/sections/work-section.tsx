@@ -74,11 +74,7 @@ const WorkSection = () => {
                         {/* Auto-scrolling image strip - FULL WIDTH */}
                         <div className="relative w-full overflow-hidden py-8">
                             <div 
-                                className="flex gap-6"
-                                style={{
-                                    animation: 'workMarquee 20s linear infinite',
-                                    willChange: 'transform',
-                                }}
+                                className="flex gap-6 animate-[workMarquee_20s_linear_infinite]"
                             >
                                 {duplicatedCards.map((card, index) => (
                                     <div
