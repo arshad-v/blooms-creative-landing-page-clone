@@ -1,39 +1,48 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 const services = [
   {
     title: "Branding & Strategy",
     tagline: "Build an unforgettable brand identity",
+    slug: "branding-strategy",
   },
   {
     title: "Digital Marketing",
     tagline: "Drive visibility, engagement & growth",
+    slug: "digital-marketing",
   },
   {
     title: "Social Media Marketing",
     tagline: "Turn followers into loyal communities",
+    slug: "social-media-marketing",
   },
   {
     title: "Influencer Marketing",
     tagline: "Authentic collaborations that convert",
+    slug: "influencer-marketing",
   },
   {
     title: "Content & Production",
     tagline: "Visual stories that resonate",
+    slug: "content-production",
   },
   {
     title: "Web & E-Commerce",
     tagline: "Design meets conversion",
+    slug: "web-ecommerce",
   },
   {
     title: "AI Automation",
     tagline: "Streamline workflows with smart systems",
+    slug: "ai-automation",
   },
   {
     title: "Managed Growth",
     tagline: "Scale sustainably with data-driven insights",
+    slug: "managed-growth",
   },
 ];
 
@@ -70,7 +79,7 @@ const ServicesOverviewSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
+    <section ref={sectionRef} id="services" className="relative bg-background text-foreground py-20 md:py-32 overflow-hidden">
       {/* Map Overlay */}
       <div
         className="absolute inset-0 z-[1] opacity-10"
@@ -107,10 +116,11 @@ const ServicesOverviewSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {services.map((service, index) => (
-            <div
+            <Link
               key={service.title}
+              href={`/services/${service.slug}`}
               data-card-index={index}
-              className={`group relative bg-muted/40 backdrop-blur-sm border border-border/30 rounded-2xl p-8 transition-all duration-500 hover:scale-105 hover:bg-muted/60 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/10 ${
+              className={`group relative bg-muted/40 backdrop-blur-sm border border-border/30 rounded-2xl p-8 transition-all duration-500 hover:scale-105 hover:bg-muted/60 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/10 cursor-pointer ${
                 visibleCards[index] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{
@@ -138,7 +148,7 @@ const ServicesOverviewSection = () => {
 
               {/* Hover Glow Effect */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/0 to-primary/0 group-hover:from-accent/5 group-hover:to-primary/5 transition-all duration-500 pointer-events-none"></div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
